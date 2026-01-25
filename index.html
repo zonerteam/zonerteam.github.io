@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Hitung Klik Real-time</title>
+</head>
+<body>
+  <h1>Poin Klik: <span id="counter">0</span></h1>
+  <button id="clickBtn">Klik Saya</button>
+
+  <!-- Tambahkan socket.io client -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const counterEl = document.getElementById("counter");
+    const btn = document.getElementById("clickBtn");
+
+    // koneksi ke server socket.io
+    const socket = io("http://yogz-privat-legal.cloudxyz.web.id:4223");
+
+    // saat tombol diklik, kirim event ke server
+    btn.addEventListener("click", () => {
+      socket.emit("klik"); 
+    });
+
+    // dengarkan update poin dari server
+    socket.on("updatePoin", (poin) => {
+      counterEl.textContent = poin;
+    });
+  </script>
+</body>
+</html>
