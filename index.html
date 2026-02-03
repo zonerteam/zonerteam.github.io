@@ -2,30 +2,43 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Hitung Klik Real-time</title>
+  <title>Monitoring Server</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; }
+    h2 { margin-top: 0; }
+  </style>
 </head>
 <body>
-  <h1>Poin Klik: <span id="counter">0</span></h1>
-  <button id="clickBtn">Klik Saya</button>
+  <h1>Monitoring Server</h1>
+  <div id="status" class="card">Loading...</div>
 
-  <!-- Tambahkan socket.io client -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    const counterEl = document.getElementById("counter");
-    const btn = document.getElementById("clickBtn");
+    async function fetchStatus() {
+      try {
+        const res = await fetch('http://yogz-privat-legal.cloudxyz.web.id:4223/status');
+        const data = await res.json();
 
-    // koneksi ke server socket.io
-    const socket = io("http://yogz-privat-legal.cloudxyz.web.id:4223");
+        document.getElementById('status').innerHTML = `
+          <h2>Status Server</h2>
+          <p><b>Uptime:</b> ${data.uptime}</p>
+          <p><b>Memory RSS:</b> ${data.memory.rss}</p>
+          <p><b>Heap Used:</b> ${data.memory.heapUsed}</p>
+          <p><b>CPU Load (1m):</b> ${data.cpu.load1}</p>
+          <p><b>CPU Load (5m):</b> ${data.cpu.load5}</p>
+          <p><b>CPU Load (15m):</b> ${data.cpu.load15}</p>
+          <p><b>Platform:</b> ${data.platform}</p>
+          <p><b>Free Memory:</b> ${data.freeMem}</p>
+          <p><b>Total Memory:</b> ${data.totalMem}</p>
+        `;
+      } catch (err) {
+        document.getElementById('status').innerHTML = "Error mengambil data!";
+      }
+    }
 
-    // saat tombol diklik, kirim event ke server
-    btn.addEventListener("click", () => {
-      socket.emit("klik"); 
-    });
-
-    // dengarkan update poin dari server
-    socket.on("updatePoin", (poin) => {
-      counterEl.textContent = poin;
-    });
+    // update setiap 2 detik
+    setInterval(fetchStatus, 2000);
+    fetchStatus();
   </script>
 </body>
 </html>
