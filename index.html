@@ -16,7 +16,7 @@
   <script>
     async function fetchStatus() {
       try {
-        const res = await fetch('http://yogz-privat-legal.cloudxyz.web.id:4223/status');
+        const res = await fetch('https://yogz-privat-legal.cloudxyz.web.id:4223/status');
         const data = await res.json();
 
         document.getElementById('status').innerHTML = `
@@ -42,3 +42,4 @@
   </script>
 </body>
 </html>
+
